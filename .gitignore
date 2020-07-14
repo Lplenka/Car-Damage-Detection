@@ -4,7 +4,12 @@ __pycache__/
 dataset/
 tf/
 checkpoints/
-
+img/
+train/
+val/
+COCO_dataset/
+mrcnn/
+mrcnn_1/
 
 
 *.h5
