@@ -6,11 +6,11 @@ import getArea
 import numpy as np
 import shutil
 
-CAR_DATASET_ORIGINAL_IMG_PATH = 'original/'
+CAR_DATASET_ORIGINAL_IMG_PATH = 'img/'
 CAR_DATASET_TRAIN_IMG_PATH = 'train/'
 CAR_DATASET_VAL_IMG_PATH = 'val/'
-ANNOTATIONS_NAME = "multiclass_via_region_data_merge.json"
-#ANNOTATIONS_NAME = "via_region_data_merge.json"
+ANNOTATIONS_NAME = "via_region_data_merge.json"
+MUL_ANNOTATIONS_NAME = "multiclass_via_region_data_merge.json"
 
 
 def create_image_info(image_id, file_name, image_size,
@@ -162,26 +162,32 @@ def convert(VIA_ORIGINAL_ANNOTATIONS_NAME, imgdir, annpath):
 
 
 # automatic split train and val
-def train_val_split(annos_name, original_dir, train_dir, val_dir, move):
+def train_val_split(annos_name, mul_annos_name, original_dir, train_dir, val_dir, move):
     annotations = json.load(open(annos_name, encoding="utf-8"))
     annotations = list(annotations.values())
+    mul_annotations = json.load(open(mul_annos_name, encoding="utf-8"))
+    mul_annotations = list(mul_annotations.values())
 
     # The VIA tool saves images in the JSON even if they don't have any
     # annotations. Skip unannotated images.
     annotations = [a for a in annotations if a['regions']]
+    mul_annotations = [a for a in mul_annotations if a['regions']]
 
     # get images in annotation
     total_images = [a['filename'] for a in annotations]
 
     # image index that will move to val
-    val_index = np.random.choice(len(annotations), size=len(annotations) // 5, replace=False).tolist()
+    val_index = np.random.choice(len(annotations), size=len(annotations) // 6, replace=False).tolist()
     train_index = [i for i in range(len(annotations))]
+
     for i in val_index:
         train_index.remove(i)
 
     # create train, val annos
     val_annos = {}
     train_annos = {}
+    mul_val_annos = {}
+    mul_train_annos = {}
     # move images to train, val folder
     if move:
         shutil.rmtree(val_dir)
@@ -192,41 +198,61 @@ def train_val_split(annos_name, original_dir, train_dir, val_dir, move):
             shutil.copyfile(original_dir + total_images[i],
                             val_dir + total_images[i])
             val_annos[annotations[i]['filename']] = annotations[i]
+            mul_val_annos[mul_annotations[i]['filename']] = mul_annotations[i]
         for i in train_index:
             shutil.copyfile(original_dir + total_images[i],
                             train_dir + total_images[i])
             train_annos[annotations[i]['filename']] = annotations[i]
+            mul_train_annos[mul_annotations[i]['filename']] = mul_annotations[i]
     # not move images to train, val folder
     else:
         for i in val_index:
             val_annos[annotations[i]['filename']] = annotations[i]
+            mul_val_annos[mul_annotations[i]['filename']] = mul_annotations[i]
         for i in train_index:
             train_annos[annotations[i]['filename']] = annotations[i]
+            mul_train_annos[mul_annotations[i]['filename']] = mul_annotations[i]
 
-    return train_annos, val_annos
+    return train_annos, val_annos, mul_train_annos, mul_val_annos
 
 
 if __name__ == '__main__':
     # get VIA annotations
-    VIA_train_annos, VIA_val_annos = train_val_split(ANNOTATIONS_NAME, CAR_DATASET_ORIGINAL_IMG_PATH,
+    Train_via_annos, Val_via_annos, Train_mul_via_annos, Val_mul_via_annos = train_val_split(ANNOTATIONS_NAME, MUL_ANNOTATIONS_NAME ,CAR_DATASET_ORIGINAL_IMG_PATH,
                                                      CAR_DATASET_TRAIN_IMG_PATH, CAR_DATASET_VAL_IMG_PATH, move=True)
 
     # save VIA annotations
-    with open(CAR_DATASET_TRAIN_IMG_PATH + 'VIA_train_annos.json', 'w', encoding="utf-8") as outfile:
-        json.dump(VIA_train_annos, outfile, sort_keys=True, indent=4, ensure_ascii=False)
+    with open(CAR_DATASET_TRAIN_IMG_PATH + 'Train_via_annos.json', 'w', encoding="utf-8") as outfile:
+        json.dump(Train_via_annos, outfile, sort_keys=True, indent=4, ensure_ascii=False)
 
-    with open(CAR_DATASET_VAL_IMG_PATH + 'VIA_val_annos.json', 'w', encoding="utf-8") as outfile:
-        json.dump(VIA_val_annos, outfile, sort_keys=True, indent=4, ensure_ascii=False)
+    with open(CAR_DATASET_VAL_IMG_PATH + 'Val_via_annos.json', 'w', encoding="utf-8") as outfile:
+        json.dump(Val_via_annos, outfile, sort_keys=True, indent=4, ensure_ascii=False)
+
+    with open(CAR_DATASET_TRAIN_IMG_PATH + 'Train_mul_via_annos.json', 'w', encoding="utf-8") as outfile:
+        json.dump(Train_mul_via_annos, outfile, sort_keys=True, indent=4, ensure_ascii=False)
+
+    with open(CAR_DATASET_VAL_IMG_PATH + 'Val_mul_via_annos.json', 'w', encoding="utf-8") as outfile:
+        json.dump(Val_mul_via_annos, outfile, sort_keys=True, indent=4, ensure_ascii=False)
 
     # convert VIA annotations to COCO annotations
     COCO_train_annos = convert(ANNOTATIONS_NAME, CAR_DATASET_TRAIN_IMG_PATH,
-                               CAR_DATASET_TRAIN_IMG_PATH + 'VIA_train_annos.json')
+                               CAR_DATASET_TRAIN_IMG_PATH + 'Train_via_annos.json')
     COCO_val_annos = convert(ANNOTATIONS_NAME, CAR_DATASET_VAL_IMG_PATH,
-                             CAR_DATASET_VAL_IMG_PATH + 'VIA_val_annos.json')
-    
+                             CAR_DATASET_VAL_IMG_PATH + 'Val_via_annos.json')
+    COCO_mul_train_annos = convert(MUL_ANNOTATIONS_NAME, CAR_DATASET_TRAIN_IMG_PATH,
+                               CAR_DATASET_TRAIN_IMG_PATH + 'Train_mul_via_annos.json')
+    COCO_mul_val_annos = convert(MUL_ANNOTATIONS_NAME, CAR_DATASET_VAL_IMG_PATH,
+                             CAR_DATASET_VAL_IMG_PATH + 'Val_mul_via_annos.json')
     # save COCO annotations
     with open(CAR_DATASET_TRAIN_IMG_PATH + 'COCO_train_annos.json', 'w', encoding="utf-8") as outfile:
         json.dump(COCO_train_annos, outfile, sort_keys=True, indent=4, ensure_ascii=False)
 
     with open(CAR_DATASET_VAL_IMG_PATH + 'COCO_val_annos.json', 'w', encoding="utf-8") as outfile:
         json.dump(COCO_val_annos, outfile, sort_keys=True, indent=4, ensure_ascii=False)
+
+    # save COCO annotations
+    with open(CAR_DATASET_TRAIN_IMG_PATH + 'COCO_mul_train_annos.json', 'w', encoding="utf-8") as outfile:
+        json.dump(COCO_mul_train_annos, outfile, sort_keys=True, indent=4, ensure_ascii=False)
+
+    with open(CAR_DATASET_VAL_IMG_PATH + 'COCO_mul_val_annos.json', 'w', encoding="utf-8") as outfile:
+        json.dump(COCO_mul_val_annos, outfile, sort_keys=True, indent=4, ensure_ascii=False)
