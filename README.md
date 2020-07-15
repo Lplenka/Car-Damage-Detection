@@ -47,8 +47,10 @@ Given a pic of damaged car, find which part is damaged. The parts can be either 
 ```
 ## Installation
 * Install python dependencies using requirements text file.
-```pip install -r requirements.txt```
-* [Pytorch](https://github.com/pytorch/pytorch) and [Detectron2](https://github.com/facebookresearch/Detectron), you can install those separately using the by refering [here](https://pytorch.org/get-started/locally/#mac-installation) and [here](https://detectron2.readthedocs.io/tutorials/install.html), I used Google Colab for training, so following are the steps to install Pytorch and Detectron:
+```
+pip install -r requirements.txt
+```
+* [Pytorch](https://github.com/pytorch/pytorch) and [Detectron2](https://github.com/facebookresearch/Detectron), you can install those separately using the following commands or by refering [here](https://pytorch.org/get-started/locally/#mac-installation) and [here](https://detectron2.readthedocs.io/tutorials/install.html), I used Google Colab for training, so following are the steps to install Pytorch and Detectron:
 
 ```
 torch==1.5.1+cu101 
@@ -56,7 +58,7 @@ torchvision==0.6.1+cu101 -f https://download.pytorch.org/whl/torch_stable.html
 pip install detectron2==0.2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu101/torch1.5/index.html
 ```
 ## Link to datasets and Models
-* [COCO_dataset]](https://drive.google.com/drive/folders/1mxdGl5Ah8NTJQIAAcWsDarJxmZFS0B84?usp=sharing)
+* [COCO_dataset](https://drive.google.com/drive/folders/1mxdGl5Ah8NTJQIAAcWsDarJxmZFS0B84?usp=sharing)
 * [dataset (Original VGG dataset)](https://drive.google.com/drive/folders/1lvapqYrXS7oCt5Mzp5UO4ZVBqZyvrjz8?usp=sharing)
 * [Damage Segmentation Model Weights](https://drive.google.com/file/d/1-Zc5l3jyPVIDSl9dy1jubMQRSXVLMGGV/view?usp=sharing)
 * [Parts Segmentation Model Weights](https://drive.google.com/file/d/1-c8ClXB9YHwkMFY6hwuX1TGqy_Q3yE7e/view?usp=sharing)
