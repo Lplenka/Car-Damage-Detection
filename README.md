@@ -32,7 +32,8 @@ Given a pic of damaged car, find which part is damaged. The parts can be either 
 │   ├── dataset_analysis.ipynb
 │   ├── detectron_custom_data.ipynb
 │   ├── detectron_test.ipynb
-│ 
+├── COCO_dataset
+├── dataset
 ├── via2coco
 │       ├── convert.py
 │       ├── getArea.py
@@ -54,6 +55,11 @@ torch==1.5.1+cu101
 torchvision==0.6.1+cu101 -f https://download.pytorch.org/whl/torch_stable.html
 pip install detectron2==0.2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu101/torch1.5/index.html
 ```
+## Link to datasets and Models
+* [COCO_dataset]](https://drive.google.com/drive/folders/1mxdGl5Ah8NTJQIAAcWsDarJxmZFS0B84?usp=sharing)
+* [dataset (Original VGG dataset)](https://drive.google.com/drive/folders/1lvapqYrXS7oCt5Mzp5UO4ZVBqZyvrjz8?usp=sharing)
+* [Damage Segmentation Model Weights](https://drive.google.com/file/d/1-Zc5l3jyPVIDSl9dy1jubMQRSXVLMGGV/view?usp=sharing)
+* [Parts Segmentation Model Weights](https://drive.google.com/file/d/1-c8ClXB9YHwkMFY6hwuX1TGqy_Q3yE7e/view?usp=sharing)
 
 ## Conclusion
 * Current parts segmentation Model confuses between front and rear bumper, probably because of the less data.
