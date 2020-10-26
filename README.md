@@ -57,6 +57,8 @@ torch==1.5.1+cu101
 torchvision==0.6.1+cu101 -f https://download.pytorch.org/whl/torch_stable.html
 pip install detectron2==0.2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu101/torch1.5/index.html
 ```
+* Pycocotools to Visualize Coco Dataset can be installed using this instructions provided [here.](https://github.com/cocodataset/cocoapi)
+
 ## Link to datasets and Models
 * [COCO_dataset](https://drive.google.com/drive/folders/1mxdGl5Ah8NTJQIAAcWsDarJxmZFS0B84?usp=sharing)
 * [dataset (Original VGG dataset)](https://drive.google.com/drive/folders/1lvapqYrXS7oCt5Mzp5UO4ZVBqZyvrjz8?usp=sharing)
